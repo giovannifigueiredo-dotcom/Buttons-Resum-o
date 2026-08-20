@@ -4,15 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  /* Fundo escuro para destacar o efeito tecnológico (ajuste se seu site for claro) */
   body {
-    background-color: transparent; /* Mantém transparente para o Google Sites */
+    background-color: transparent; 
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 
   .tech-btn {
@@ -32,7 +31,6 @@
     backdrop-filter: blur(10px);
   }
 
-  /* O efeito de Glow Dinâmico */
   .tech-btn::before {
     content: '';
     position: absolute;
@@ -40,7 +38,6 @@
     left: 0;
     width: 100%;
     height: 100%;
-    /* O gradiente usa as variáveis --x e --y definidas pelo JavaScript */
     background: radial-gradient(
       circle 70px at var(--x) var(--y), 
       rgba(0, 212, 255, 0.4), 
@@ -48,7 +45,7 @@
     );
     opacity: 0;
     transition: opacity 0.3s ease;
-    pointer-events: none; /* Garante que o hover funcione no botão, não na camada de luz */
+    pointer-events: none; 
   }
 
   .tech-btn:hover::before {
@@ -63,7 +60,6 @@
     transform: scale(0.98);
   }
 
-  /* Mantém o texto acima do efeito de brilho */
   .btn-text {
     position: relative;
     z-index: 1;
@@ -73,24 +69,19 @@
 </head>
 <body>
 
-  <!-- O Botão -->
-  <button class="tech-btn">
-    <span class="btn-text">Iniciar Sistema</span>
+  <!-- O Botão (Cole o seu link no lugar indicado abaixo) -->
+  <button class="tech-btn" onclick="window.top.location.href='https://sites.google.com/view/seusite/sua-pagina'">
+    <span class="btn-text">Ir para a aba</span>
   </button>
 
-  <!-- Script que calcula a posição do mouse -->
   <script>
     const button = document.querySelector('.tech-btn');
 
     button.addEventListener('mousemove', (e) => {
-      // Pega as dimensões e a posição atual do botão na tela
       const rect = button.getBoundingClientRect();
-      
-      // Calcula a posição do mouse relativa ao botão
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       
-      // Atualiza as variáveis CSS
       button.style.setProperty('--x', `${x}px`);
       button.style.setProperty('--y', `${y}px`);
     });
