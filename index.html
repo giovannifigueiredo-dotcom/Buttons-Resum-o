@@ -1,91 +1,256 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  body {
-    background-color: transparent; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mouse Follow Glow Button</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  .tech-btn {
-    position: relative;
-    padding: 16px 48px;
-    background-color: rgba(20, 20, 22, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    cursor: pointer;
-    overflow: hidden;
-    transition: border-color 0.3s ease, transform 0.1s ease;
-    backdrop-filter: blur(10px);
-  }
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0a0a0f;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
 
-  .tech-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(
-      circle 70px at var(--x) var(--y), 
-      rgba(0, 212, 255, 0.4), 
-      transparent 100%
-    );
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none; 
-  }
+        /* Grid background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+        }
 
-  .tech-btn:hover::before {
-    opacity: 1;
-  }
+        .button-container {
+            position: relative;
+            padding: 60px;
+        }
 
-  .tech-btn:hover {
-    border-color: rgba(0, 212, 255, 0.5);
-  }
+        .glow-button {
+            position: relative;
+            padding: 18px 48px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #00ffff;
+            background: transparent;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 4px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            outline: none;
+        }
 
-  .tech-btn:active {
-    transform: scale(0.98);
-  }
+        .glow-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at var(--x, 50%) var(--y, 50%),
+                rgba(0, 255, 255, 0.15) 0%,
+                rgba(0, 255, 255, 0.05) 40%,
+                transparent 70%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
 
-  .btn-text {
-    position: relative;
-    z-index: 1;
-    pointer-events: none;
-  }
-</style>
+        .glow-button::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: radial-gradient(
+                circle at var(--x, 50%) var(--y, 50%),
+                rgba(0, 255, 255, 0.6) 0%,
+                rgba(0, 150, 255, 0.3) 30%,
+                transparent 60%
+            );
+            border-radius: 6px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            filter: blur(8px);
+        }
+
+        .glow-button:hover {
+            color: #ffffff;
+            border-color: rgba(0, 255, 255, 0.6);
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.2),
+                inset 0 0 20px rgba(0, 255, 255, 0.05);
+        }
+
+        .glow-button:hover::before,
+        .glow-button:hover::after {
+            opacity: 1;
+        }
+
+        .glow-button:active {
+            transform: scale(0.98);
+            box-shadow: 
+                0 0 40px rgba(0, 255, 255, 0.4),
+                inset 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        /* Corner accents for tech feel */
+        .glow-button .corner {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .glow-button .corner-tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+        .glow-button .corner-tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+        .glow-button .corner-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+        .glow-button .corner-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+        .glow-button:hover .corner {
+            width: 12px;
+            height: 12px;
+            border-color: rgba(0, 255, 255, 1);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Scan line effect */
+        .glow-button .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.8), transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .glow-button:hover .scan-line {
+            animation: scan 1.5s ease-in-out infinite;
+        }
+
+        @keyframes scan {
+            0%, 100% { transform: scaleX(0); transform-origin: left; }
+            50% { transform: scaleX(1); transform-origin: left; }
+            51% { transform-origin: right; }
+            100% { transform: scaleX(0); transform-origin: right; }
+        }
+
+        /* Info text below button */
+        .info-text {
+            margin-top: 40px;
+            color: rgba(0, 255, 255, 0.4);
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
+    <div class="button-container">
+        <button class="glow-button" id="glowBtn">
+            <span class="corner corner-tl"></span>
+            <span class="corner corner-tr"></span>
+            <span class="corner corner-bl"></span>
+            <span class="corner corner-br"></span>
+            <span class="scan-line"></span>
+            Iniciar Sistema
+        </button>
+        <p class="info-text">MOVE O MOUSE SOBRE O BOTÃO</p>
+    </div>
 
-  <!-- O Botão (Cole o seu link no lugar indicado abaixo) -->
-  <button class="tech-btn" onclick="window.top.location.href='https://sites.google.com/view/seusite/sua-pagina'">
-    <span class="btn-text">Ir para a aba</span>
-  </button>
+    <script>
+        const button = document.getElementById('glowBtn');
 
-  <script>
-    const button = document.querySelector('.tech-btn');
+        button.addEventListener('mousemove', function(e) {
+            const rect = button.getBoundingClientRect();
+            
+            // Calculate mouse position relative to button (0-100%)
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-    button.addEventListener('mousemove', (e) => {
-      const rect = button.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      button.style.setProperty('--x', `${x}px`);
-      button.style.setProperty('--y', `${y}px`);
-    });
-  </script>
+            // Update CSS custom properties for gradient position
+            button.style.setProperty('--x', x + '%');
+            button.style.setProperty('--y', y + '%');
 
+            // Dynamic shadow intensity based on position
+            const centerX = Math.abs(x - 50) / 50; // 0-1 distance from center X
+            const centerY = Math.abs(y - 50) / 50; // 0-1 distance from center Y
+            const intensity = 0.2 + (centerX + centerY) * 0.3;
+
+            button.style.boxShadow = `
+                ${ (x - 50) * 0.3 }px ${ (y - 50) * 0.3 }px ${ 20 + intensity * 30 }px rgba(0, 255, 255, ${intensity}),
+                inset 0 0 ${20 + intensity * 20}px rgba(0, 255, 255, ${intensity * 0.15})
+            `;
+        });
+
+        // Reset on mouse leave
+        button.addEventListener('mouseleave', function() {
+            button.style.setProperty('--x', '50%');
+            button.style.setProperty('--y', '50%');
+            button.style.boxShadow = 'none';
+        });
+
+        // Click ripple effect
+        button.addEventListener('click', function(e) {
+            const rect = button.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const ripple = document.createElement('span');
+            ripple.style.cssText = `
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                background: rgba(0, 255, 255, 0.4);
+                border-radius: 50%;
+                left: ${x}px;
+                top: ${y}px;
+                transform: translate(-50%, -50%) scale(0);
+                animation: ripple 0.6s ease-out forwards;
+                pointer-events: none;
+            `;
+
+            button.appendChild(ripple);
+
+            setTimeout(() => ripple.remove(), 600);
+        });
+
+        // Add ripple keyframes dynamically
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: translate(-50%, -50%) scale(20);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
